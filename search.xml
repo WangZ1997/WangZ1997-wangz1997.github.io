@@ -1,0 +1,172 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Hello World</title>
+    <url>/2020/03/13/hello-world/</url>
+    <content><![CDATA[<p>Welcome to <a href="https://hexo.io/" target="_blank" rel="noopener">Hexo</a>! This is your very first post. Check <a href="https://hexo.io/docs/" target="_blank" rel="noopener">documentation</a> for more info. If you get any problems when using Hexo, you can find the answer in <a href="https://hexo.io/docs/troubleshooting.html" target="_blank" rel="noopener">troubleshooting</a> or you can ask me on <a href="https://github.com/hexojs/hexo/issues" target="_blank" rel="noopener">GitHub</a>.</p>
+<h2 id="Quick-Start"><a href="#Quick-Start" class="headerlink" title="Quick Start"></a>Quick Start</h2><h3 id="Create-a-new-post"><a href="#Create-a-new-post" class="headerlink" title="Create a new post"></a>Create a new post</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo new <span class="string">"My New Post"</span></span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/writing.html" target="_blank" rel="noopener">Writing</a></p>
+<h3 id="Run-server"><a href="#Run-server" class="headerlink" title="Run server"></a>Run server</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo server</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/server.html" target="_blank" rel="noopener">Server</a></p>
+<h3 id="Generate-static-files"><a href="#Generate-static-files" class="headerlink" title="Generate static files"></a>Generate static files</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo generate</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/generating.html" target="_blank" rel="noopener">Generating</a></p>
+<h3 id="Deploy-to-remote-sites"><a href="#Deploy-to-remote-sites" class="headerlink" title="Deploy to remote sites"></a>Deploy to remote sites</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">$ hexo deploy</span><br></pre></td></tr></table></figure>
+
+<p>More info: <a href="https://hexo.io/docs/one-command-deployment.html" target="_blank" rel="noopener">Deployment</a></p>
+]]></content>
+  </entry>
+  <entry>
+    <title>Ribbon的基本使用</title>
+    <url>/2020/03/11/Ribbon%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<h2 id="Ribbon"><a href="#Ribbon" class="headerlink" title="Ribbon"></a>Ribbon</h2><h4 id="1-概述"><a href="#1-概述" class="headerlink" title="1.概述"></a>1.概述</h4><p>在springcloud中可以将注册中心和Ribbon配合使用,Ribbon自动地从注册中心获取服务提供者的列表信息，并基于内置的负载均衡算算法，请求服务。</p>
+<ul>
+<li><p>主要作用包括</p>
+<ul>
+<li><p>服务调用</p>
+</li>
+<li><p>负载均衡</p>
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="2-服务调用"><a href="#2-服务调用" class="headerlink" title="2.服务调用"></a>2.服务调用</h4><ul>
+<li><p>在创建RestTemplate的时候，声明@LoadBalanced注解</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="string">@LoadBalanced</span></span><br><span class="line">  <span class="string">@Bean</span></span><br><span class="line">  <span class="string">public</span> <span class="string">RestTemplate</span> <span class="string">restTemplate()</span></span><br><span class="line">  <span class="string">&#123;</span></span><br><span class="line">      <span class="string">return</span>  <span class="string">new</span> <span class="string">RestTemplate();</span></span><br><span class="line">  <span class="string">&#125;</span></span><br><span class="line">  <span class="string">public</span> <span class="string">static</span> <span class="string">void</span> <span class="string">main(String[]</span> <span class="string">args)</span> <span class="string">&#123;</span></span><br><span class="line">      <span class="string">SpringApplication.run(OrderServiceApplication.class,</span> <span class="string">args);</span></span><br><span class="line">  <span class="string">&#125;</span></span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>使用restTemeplate调用远程微服务，不需要拼接微服务的URL，用带请求的服务名替换即可</p>
+</li>
+<li><pre><code class="java"><span class="function"><span class="keyword">public</span> User <span class="title">findById</span><span class="params">(@PathVariable <span class="keyword">int</span> id)</span></span>
+<span class="function"></span>{
+        List&lt;ServiceInstance&gt; instances = discoveryClient.getInstances(<span class="string">"product_service"</span>);
+        ServiceInstance instance = instances.get(<span class="number">0</span>);
+          User user = restTemplate.getForObject(<span class="string">"product_service/find/1"</span>, User<span class="class">.<span class="keyword">class</span>)</span>;
+        <span class="keyword">return</span> user;
+    }
+&lt;!--￼<span class="number">1</span>--&gt;
+
+
+</code></pre>
+</li>
+</ul>
+<ul>
+<li><p>重试机制</p>
+<ul>
+<li><p>当一个消费者连接多个生产者时，如果某一个生产者Done掉，那么会自动地向另外的生产者发送请求，并且也会对Done了的生产者发送请求看他是否能够恢复</p>
+</li>
+<li><p>操作步骤</p>
+<ul>
+<li><p>引入依赖</p>
+</li>
+<li><pre><code class="xml"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span>   <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.retry<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span>
+ <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-retry<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span>
+<span class="tag">&lt;/<span class="name">dependency</span>&gt;</span>
+<span class="comment"><figure class="highlight plain"><table><tr><td class="code"><pre><span class="line"></span><br><span class="line">    * 修改配置文件</span><br><span class="line"></span><br><span class="line">&#96;&#96;&#96;yml</span><br><span class="line">product_service:</span><br><span class="line">  ribbon:</span><br><span class="line">   # NFLoadBalancerRuleClassName: com.netflix.loadbalancer.RandomRule #随机算法</span><br><span class="line">   ConnectTimeout: 250 #Ribbon的连接超时时间，在时间内的可以进行连接</span><br><span class="line">   ReadTimeout: 1000 #Ribbon的数据读取超时时间，在连接超时时间内，如果读取数据超时也不可以</span><br><span class="line">   OkToRetryOnAllOperations: true #是否对所有的操作进行重复</span><br><span class="line">   MaxAutoRetriesNextServer: 1 # 切换实力的重试次数</span><br><span class="line">   MaxAutoRetries: 1 #对当前实力的重试次数</span><br></pre></td></tr></table></figure></span></code></pre>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><p>Ribbon源码分析</p>
+</li>
+</ul>
+<p><img src="C:%5CUsers%5Cwangz%5CAppData%5CRoaming%5CTypora%5Ctypora-user-images%5Cimage-20200303192710185.png" alt="image-20200303192710185"></p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3>]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>SpringCloud</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>SpringCloud之Eureka的使用</title>
+    <url>/2020/03/10/Eureka%E7%9A%84%E4%BD%BF%E7%94%A8/</url>
+    <content><![CDATA[<h2 id="Eureka"><a href="#Eureka" class="headerlink" title="Eureka"></a>Eureka</h2><h3 id="1-Eureka的使用"><a href="#1-Eureka的使用" class="headerlink" title="1.Eureka的使用"></a>1.Eureka的使用</h3><h4 id="1-建立注册中心"><a href="#1-建立注册中心" class="headerlink" title="1.建立注册中心"></a>1.建立注册中心</h4><ul>
+<li><p>导入依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-server<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<a id="more"></a></li>
+<li><p>修改配置文件</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9000</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">localhost</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="comment">#register-with-eureka: false #注册中心不会把自己注册</span></span><br><span class="line">    <span class="comment">#fetch-register: false #注册中心自己不会从注册中心获取服务</span></span><br><span class="line">    <span class="attr">service-url:</span> <span class="comment">#将注册中心自己的ip和端口号进行爆露出来</span></span><br><span class="line">      <span class="comment">#defaultZone: http://$&#123;eureka.instance.hostname&#125;:$&#123;server.port&#125;/eureka/</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://127.0.0.1:8000/eureka/</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>在springboot的启动项上添加@EnableEurekaServer注解</p>
+</li>
+</ul>
+<h4 id="2-创建生产者"><a href="#2-创建生产者" class="headerlink" title="2.创建生产者"></a>2.创建生产者</h4><ul>
+<li>添加依赖</li>
+</ul>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">          <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">      <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>修改配置文件</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9002</span></span><br><span class="line"><span class="attr">erueka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://localhost:9000/eureka,</span> <span class="string">http://localhost:8000/eureka</span></span><br><span class="line">    <span class="attr">instance:</span></span><br><span class="line">      <span class="attr">prefer-ip-address:</span> <span class="literal">true</span> <span class="comment">#使用ip地址的方式进行注册</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>编写controller</p>
+<figure class="highlight java"><table><tr><td class="code"><pre><span class="line"><span class="meta">@RestController</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">OrderController</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    RestTemplate restTemplate;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    DiscoveryClient discoveryClient;</span><br><span class="line">    <span class="meta">@RequestMapping</span>(value = <span class="string">"/order/find/&#123;id&#125;"</span>,method = RequestMethod.GET)</span><br><span class="line">    <span class="function"><span class="keyword">public</span> User <span class="title">findById</span><span class="params">(@PathVariable <span class="keyword">int</span> id)</span></span></span><br><span class="line"><span class="function">    </span>&#123;</span><br><span class="line">        List&lt;ServiceInstance&gt; instances = discoveryClient.getInstances(<span class="string">"product_service"</span>);</span><br><span class="line">        ServiceInstance instance = instances.get(<span class="number">0</span>);</span><br><span class="line"></span><br><span class="line">        User user = restTemplate.getForObject(<span class="string">"http://"</span>+instance.getHost()+<span class="string">":"</span>+instance.getPort()+<span class="string">"/find/1"</span>, User<span class="class">.<span class="keyword">class</span>)</span>;</span><br><span class="line">        <span class="keyword">return</span> user;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置启动项</p>
+<p>在springboot的启动项上添加@EnableEurekaClient注解</p>
+</li>
+</ul>
+<h4 id="3-创建消费者"><a href="#3-创建消费者" class="headerlink" title="3.创建消费者"></a>3.创建消费者</h4><ul>
+<li><p>添加依赖</p>
+<figure class="highlight xml"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">dependency</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">groupId</span>&gt;</span>org.springframework.cloud<span class="tag">&lt;/<span class="name">groupId</span>&gt;</span></span><br><span class="line">         <span class="tag">&lt;<span class="name">artifactId</span>&gt;</span>spring-cloud-starter-netflix-eureka-client<span class="tag">&lt;/<span class="name">artifactId</span>&gt;</span></span><br><span class="line">     <span class="tag">&lt;/<span class="name">dependency</span>&gt;</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>修改配置文件</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">spring:</span></span><br><span class="line">  <span class="attr">application:</span></span><br><span class="line">    <span class="attr">name:</span> <span class="string">product_service</span></span><br><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9001</span></span><br><span class="line"><span class="attr">erueka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">service-url:</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://localhost:9000/eureka,</span> <span class="string">http://localhost:8000/eureka</span></span><br><span class="line">    <span class="attr">instance:</span></span><br><span class="line">        <span class="attr">prefer-ip-address:</span> <span class="literal">true</span> <span class="comment">#使用ip地址的方式进行注册</span></span><br></pre></td></tr></table></figure>
+</li>
+<li><p>配置启动项</p>
+<p>在springboot的启动项上添加@EnableEurekaClient注解</p>
+</li>
+</ul>
+<h3 id="2-Eureka的高可用"><a href="#2-Eureka的高可用" class="headerlink" title="2.Eureka的高可用"></a>2.Eureka的高可用</h3><ul>
+<li><p>也就是说我们创建多个Eureka的注册中心，多个主次中心之间进行关联，大多数据共享，同时每个注册中心都与每个生产者和消费者相连接，我们采用修改端口号的方式模拟高可用</p>
+<ul>
+<li>一号注册中心</li>
+</ul>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9000</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">localhost</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="comment">#register-with-eureka: false #注册中心不会把自己注册</span></span><br><span class="line">    <span class="comment">#fetch-register: false #注册中心自己不会从注册中心获取服务</span></span><br><span class="line">    <span class="attr">service-url:</span> <span class="comment">#将注册中心自己的ip和端口号进行爆露出来</span></span><br><span class="line">      <span class="comment">#defaultZone: http://$&#123;eureka.instance.hostname&#125;:$&#123;server.port&#125;/eureka/</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://127.0.0.1:8000/eureka/</span></span><br></pre></td></tr></table></figure>
+
+<ul>
+<li><p>二号注册中心</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9000</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">    <span class="attr">hostname:</span> <span class="string">localhost</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="comment">#register-with-eureka: false #注册中心不会把自己注册</span></span><br><span class="line">    <span class="comment">#fetch-register: false #注册中心自己不会从注册中心获取服务</span></span><br><span class="line">    <span class="attr">service-url:</span> <span class="comment">#将注册中心自己的ip和端口号进行爆露出来</span></span><br><span class="line">      <span class="comment">#defaultZone: http://$&#123;eureka.instance.hostname&#125;:$&#123;server.port&#125;/eureka/</span></span><br><span class="line">      <span class="attr">defaultZone:</span> <span class="string">http://127.0.0.1:9000/eureka/</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+</li>
+</ul>
+<h4 id="细节问题"><a href="#细节问题" class="headerlink" title="细节问题"></a>细节问题</h4><ul>
+<li><p>将微服务的ip和端口号能够显示到注册中心的控制台上,在生产者的yml中添加一个配置</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">server:</span></span><br><span class="line">  <span class="attr">port:</span> <span class="number">9000</span></span><br><span class="line"><span class="attr">eureka:</span></span><br><span class="line">  <span class="attr">instance:</span></span><br><span class="line">      <span class="attr">instance-id:</span> <span class="string">$&#123;spring.cloud.client.ip-address&#125;:$&#123;server.port&#125;#想注册中心注册服务ID</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+<ul>
+<li><p>服务端想注册中心发送一个消息，默认是90s之内如果不发送消息，注册中心回自动的删除到这个服务，但是90s的时间太长，我们可以自己修改续约时间。</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">erueka:</span></span><br><span class="line">  <span class="attr">client:</span></span><br><span class="line">    <span class="attr">instance:</span></span><br><span class="line">        <span class="attr">prefer-ip-address:</span> <span class="literal">true</span> <span class="comment">#使用ip地址的方式进行注册</span></span><br><span class="line">        <span class="attr">instance-id:</span> <span class="string">$&#123;spring.cloud.client.ip-address&#125;:$&#123;server.port&#125;#想注册中心注册服务ID</span></span><br><span class="line">        <span class="attr">lease-renewal-interval-in-seconds:</span> <span class="number">5</span> <span class="comment">#想注册中心注册服务的id</span></span><br><span class="line">        <span class="attr">lease-expiration-duration-in-seconds:</span> <span class="number">10</span> <span class="comment">#续约到期的时间</span></span><br></pre></td></tr></table></figure>
+
+
+
+</li>
+</ul>
+<ul>
+<li><p>当注册中心发现生产者没有及时的给他发送服务信息，如果这种情况打羽85%，则注册中心就和执行自我保护机制，也就是说不在回删除掉那些心跳超时的服务了，但是我们在开发阶段需要及时的获取注册中心的信息，因此我们回关闭掉自我保护机制，但是实际的部署阶段，应该开启自我保护机制。</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">erueka:</span></span><br><span class="line">    <span class="attr">server:</span></span><br><span class="line">      <span class="attr">enbale-self-preservation:</span> <span class="literal">false</span> <span class="comment"># 关闭自我保护机制</span></span><br><span class="line">      <span class="attr">evicition-interval-timer-in-ms:</span> <span class="number">4000</span> <span class="comment">#提出服务间隔，毫秒为单位</span></span><br></pre></td></tr></table></figure>
+
+</li>
+</ul>
+]]></content>
+      <categories>
+        <category>Java</category>
+      </categories>
+      <tags>
+        <tag>SpringCloud</tag>
+      </tags>
+  </entry>
+</search>
