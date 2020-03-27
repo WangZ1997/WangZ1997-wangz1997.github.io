@@ -5,9 +5,9 @@
   
   <link href="/atom.xml" rel="self"/>
   
-  <link href="http://wangz1997.github.io/"/>
+  <link href="http://blog.geekzone.site/"/>
   <updated>2020-03-14T00:27:14.764Z</updated>
-  <id>http://wangz1997.github.io/</id>
+  <id>http://blog.geekzone.site/</id>
   
   <author>
     <name>Wang Zhao</name>
@@ -18,8 +18,8 @@
   
   <entry>
     <title>Hello World</title>
-    <link href="http://wangz1997.github.io/2020/03/13/hello-world/"/>
-    <id>http://wangz1997.github.io/2020/03/13/hello-world/</id>
+    <link href="http://blog.geekzone.site/2020/03/13/hello-world/"/>
+    <id>http://blog.geekzone.site/2020/03/13/hello-world/</id>
     <published>2020-03-13T09:47:45.898Z</published>
     <updated>2020-03-14T00:27:14.764Z</updated>
     
@@ -37,8 +37,8 @@
   
   <entry>
     <title>Ribbon的基本使用</title>
-    <link href="http://wangz1997.github.io/2020/03/11/Ribbon%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/"/>
-    <id>http://wangz1997.github.io/2020/03/11/Ribbon%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</id>
+    <link href="http://blog.geekzone.site/2020/03/11/Ribbon%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/"/>
+    <id>http://blog.geekzone.site/2020/03/11/Ribbon%E7%9A%84%E5%9F%BA%E6%9C%AC%E4%BD%BF%E7%94%A8/</id>
     <published>2020-03-11T01:18:21.000Z</published>
     <updated>2020-03-14T00:26:54.819Z</updated>
     
@@ -51,17 +51,17 @@
     </summary>
     
     
-      <category term="Java" scheme="http://wangz1997.github.io/categories/Java/"/>
+      <category term="Java" scheme="http://blog.geekzone.site/categories/Java/"/>
     
     
-      <category term="SpringCloud" scheme="http://wangz1997.github.io/tags/SpringCloud/"/>
+      <category term="SpringCloud" scheme="http://blog.geekzone.site/tags/SpringCloud/"/>
     
   </entry>
   
   <entry>
     <title>SpringCloud之Eureka的使用</title>
-    <link href="http://wangz1997.github.io/2020/03/10/Eureka%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
-    <id>http://wangz1997.github.io/2020/03/10/Eureka%E7%9A%84%E4%BD%BF%E7%94%A8/</id>
+    <link href="http://blog.geekzone.site/2020/03/10/Eureka%E7%9A%84%E4%BD%BF%E7%94%A8/"/>
+    <id>http://blog.geekzone.site/2020/03/10/Eureka%E7%9A%84%E4%BD%BF%E7%94%A8/</id>
     <published>2020-03-10T15:48:27.000Z</published>
     <updated>2020-03-13T10:01:39.299Z</updated>
     
@@ -76,10 +76,10 @@
     </summary>
     
     
-      <category term="Java" scheme="http://wangz1997.github.io/categories/Java/"/>
+      <category term="Java" scheme="http://blog.geekzone.site/categories/Java/"/>
     
     
-      <category term="SpringCloud" scheme="http://wangz1997.github.io/tags/SpringCloud/"/>
+      <category term="SpringCloud" scheme="http://blog.geekzone.site/tags/SpringCloud/"/>
     
   </entry>
   
